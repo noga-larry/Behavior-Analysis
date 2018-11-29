@@ -21,6 +21,10 @@ window = -(params.time_before+params.smoothing_margins):...
     (params.time_after+params.smoothing_margins);
 for ii=1:length(ind)
     ts = data.trials(ind(ii)).movement_onset+window;
+    vVel_raw = data.trials(ind(ii)).vVel(ts);
+    hVel_raw = data.trials(ind(ii)).hVel(ts);
+    
+    vVel_raw
     
     
     vVel(ii,:) = data.trials(ind(ii)).vVel(ts);

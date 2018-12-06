@@ -1,6 +1,6 @@
-function [Have,Vave] = meanVelocities(data,params,ind);
+function [Have,Vave] = meanVelocities(data,params,ind)
 
-% This function recieves computes the average horizontal and vertical
+% This function computes the average horizontal and vertical
 % velocities of a sunset of trials in a session. In the procees it removes 
 % saccades and blinks and smoothes the averages using a Gaussian window.
 % Inputs: data           A data structure containing trial information, as 
@@ -17,6 +17,8 @@ function [Have,Vave] = meanVelocities(data,params,ind);
 %           .SD          Strandard deviation for Gaussian smoothing window 
 %        ind             Indices of trials to average (should be in same 
 %                        direction)
+% Outputs:  Have         Average horizontal velocity
+%           Vave         Average vertical velocity
 
 % preallocate:
 window = -(params.time_before+params.smoothing_margins):...
@@ -47,7 +49,7 @@ Have_raw = nanmean(hVel,1);
 Vave_raw = gaussSmooth(Vave_raw,params.SD);
 Have_raw = gaussSmooth(Have_raw,params.SD);
 
-ts = params.smoothing_margins:params.smoothing_margins+params.time_after;
+ts = params.smoothing_margins:(params.time_before+params.smoothing_margins+params.time_after);
 Vave = Vave_raw(ts); 
 Have = Have_raw(ts); 
 

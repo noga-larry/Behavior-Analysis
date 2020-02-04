@@ -1,7 +1,7 @@
-function [Have,Vave] = meanVelocities(data,params,ind)
+function [Have,Vave,hVel,vVel] = meanVelocities(data,params,ind)
 
 % This function computes the average horizontal and vertical
-% velocities of a sunset of trials in a session. In the procees it removes 
+% velocities of a subset of trials in a session. In the procees it removes 
 % saccades and blinks and smoothes the averages using a Gaussian window.
 % Inputs: data           A data structure containing trial information, as 
 %                        created by get_data
@@ -32,6 +32,8 @@ for ii=1:length(ind)
     
     vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
     hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
+    vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+    hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
     
     ts = data.trials(ind(ii)).movement_onset+window;
     vVel_raw = vVel_raw(ts);
@@ -52,6 +54,9 @@ Have_raw = gaussSmooth(Have_raw,params.SD);
 ts = params.smoothing_margins:(params.time_before+params.smoothing_margins+params.time_after);
 Vave = Vave_raw(ts); 
 Have = Have_raw(ts); 
+
+vVel = vVel(:,ts);
+hVel = hVel(:,ts);
 
 
 

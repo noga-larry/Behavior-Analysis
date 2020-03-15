@@ -1,7 +1,7 @@
-function [Have,Vave,hVel,vVel] = meanVelocities(data,params,ind, varargin)
+function [Have,Vave,hPos,vPos] = meanPositions(data,params,ind)
 
 % This function computes the average horizontal and vertical
-% velocities of a subset of trials in a session. In the procees it removes 
+% Positions of a subset of trials in a session. In the procees it removes 
 % saccades and blinks and smoothes the averages using a Gaussian window.
 % Inputs: data           A data structure containing trial information, as 
 %                        created by get_data
@@ -20,42 +20,34 @@ function [Have,Vave,hVel,vVel] = meanVelocities(data,params,ind, varargin)
 % Outputs:  Have         Average horizontal velocity
 %           Vave         Average vertical velocity
 
-
-p = inputParser;
-defaultSmoothIndividualTrials = false;
-addOptional(p,'smoothIndividualTrials',defaultSmoothIndividualTrials,@islogical);
-
-parse(p,varargin{:});
-smoothIndividualTrials = p.Results.smoothIndividualTrials;
-
-
 % preallocate:
 window = -(params.time_before+params.smoothing_margins):...
     (params.time_after+params.smoothing_margins);
-vVel = nan(length(ind),length(window));
-hVel = nan(length(ind),length(window));
+vPos = nan(length(ind),length(window));
+hPos = nan(length(ind),length(window));
 for ii=1:length(ind)
     
-    vVel_raw = data.trials(ind(ii)).vVel;
-    hVel_raw = data.trials(ind(ii)).hVel;
+    vPos_raw = data.trials(ind(ii)).vPos;
+    hPos_raw = data.trials(ind(ii)).hPos;
+
     
-    vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
-    hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
-    vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
-    hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+    vPos_raw = removesSaccades(vPos_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
+    hPos_raw = removesSaccades(hPos_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
+    vPos_raw = removesSaccades(vPos_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+    hPos_raw = removesSaccades(hPos_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
     
     ts = data.trials(ind(ii)).movement_onset+window;
-    vVel_raw = vVel_raw(ts);
-    hVel_raw = hVel_raw(ts);
+    vPos_raw = vPos_raw(ts);
+    hPos_raw = hPos_raw(ts);
         
-    vVel(ii,:) = vVel_raw;
-    hVel(ii,:) = hVel_raw;
+    vPos(ii,:) = vPos_raw;
+    hPos(ii,:) = hPos_raw;
     
     
 end
 
-Vave_raw = nanmean(vVel,1);
-Have_raw = nanmean(hVel,1);
+Vave_raw = nanmean(vPos,1);
+Have_raw = nanmean(hPos,1);
 
 Vave_raw = gaussSmooth(Vave_raw,params.SD);
 Have_raw = gaussSmooth(Have_raw,params.SD);
@@ -64,17 +56,8 @@ ts = params.smoothing_margins:(params.time_before+params.smoothing_margins+param
 Vave = Vave_raw(ts); 
 Have = Have_raw(ts); 
 
-if smoothIndividualTrials
-    for ii=1:size(hVel,1)
-        
-        hVel(ii,:) = gaussSmooth(hVel(ii,:),params.SD);
-        vVel(ii,:) = gaussSmooth(vVel(ii,:),params.SD);
-        
-    end
-end
-
-vVel = vVel(:,ts);
-hVel = hVel(:,ts);
+vPos = vPos(:,ts);
+hPos = hPos(:,ts);
 
 
 

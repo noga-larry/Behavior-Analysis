@@ -17,9 +17,5 @@ rotatedTrace = Rot*trace;
 rotatedTraceH = rotatedTrace(1,:);
 rotatedTraceV = rotatedTrace(2,:);
 
-
-
-
-
 end
 

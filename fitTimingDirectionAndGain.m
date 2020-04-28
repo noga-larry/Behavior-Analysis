@@ -1,5 +1,23 @@
 
 function [gain, latency, init_time ,rotateAngle]  = fitTimingDirectionAndGain(V,H)
+
+% This function is based on a function of Mati's used for Raghavan &
+% Joshua, 2017. The function calculates the single trial gain and latency 
+% in an iterative manner. The idea is to use the average behavior
+% as a templates and find the best latency and gain to fit the individual
+% trial to the average. In following iterations the single tril behavior is
+% shifted by its latency and the template is recalculated. 
+% Inputs:
+%   H          Horizontal velocity (TrialsXtime), smoothed and with saccades removed),
+%              index 1 is target movement onset. 
+%   V          Verticall velocity, same as H. 
+% Outputs:      
+%  gain        The game of the horizonal and vertical velocity for each
+%              trial, following rotation by rotateAngle.
+
+
+
+
 LEN  = 175;
 BASELINE_LEN =50;
 FIRST_INX = 25;

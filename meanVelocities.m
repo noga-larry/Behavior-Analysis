@@ -23,10 +23,13 @@ function [Have,Vave,hVel,vVel] = meanVelocities(data,params,ind, varargin)
 
 p = inputParser;
 defaultSmoothIndividualTrials = false;
+defaultAlignTo = 'targetMovementOnset';
 addOptional(p,'smoothIndividualTrials',defaultSmoothIndividualTrials,@islogical);
+addOptional(p,'alignTo',defaultAlignTo,@ischar);
 
 parse(p,varargin{:});
 smoothIndividualTrials = p.Results.smoothIndividualTrials;
+alignTo = p.Results.alignTo;
 
 
 % preallocate:
@@ -44,7 +47,13 @@ for ii=1:length(ind)
     vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
     hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
     
-    ts = data.trials(ind(ii)).movement_onset+window;
+    switch alignTo
+        case 'targetMovementOnset'
+            ts = data.trials(ind(ii)).movement_onset+window;
+        case 'cue'
+            ts = data.trials(ind(ii)).cue_onset+window;
+    end
+    
     vVel_raw = vVel_raw(ts);
     hVel_raw = hVel_raw(ts);
         

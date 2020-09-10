@@ -12,14 +12,14 @@ function [gain, latency, init_time ,rotateAngle]  = fitTimingDirectionAndGain(V,
 %              index 1 is target movement onset. 
 %   V          Verticall velocity, same as H. 
 % Outputs:      
-%  gain        The game of the horizonal and vertical velocity for each
+%  gain        The gain of the horizonal and vertical velocity for each
 %              trial, following rotation by rotateAngle.
 
 
 
 
 LEN  = 175;
-BASELINE_LEN =50;
+BASELINE_LEN = 50; %length pf baseline to sunstract from velocity (to account for small drift)
 FIRST_INX = 25;
 NUM_ITER = 2; % number of iterations
 

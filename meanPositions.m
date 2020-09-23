@@ -1,4 +1,4 @@
-function [Have,Vave,hPos,vPos] = meanPositions(data,params,ind)
+function [Have,Vave,hPos,vPos] = meanPositions(data,params,ind,varargin)
 
 % This function computes the average horizontal and vertical
 % Positions of a subset of trials in a session. In the procees it removes 
@@ -20,11 +20,23 @@ function [Have,Vave,hPos,vPos] = meanPositions(data,params,ind)
 % Outputs:  Have         Average horizontal velocity
 %           Vave         Average vertical velocity
 
+
+p = inputParser;
+defaultSmoothIndividualTrials = false;
+defaultAlignTo = 'targetMovementOnset';
+addOptional(p,'smoothIndividualTrials',defaultSmoothIndividualTrials,@islogical);
+addOptional(p,'alignTo',defaultAlignTo,@ischar);
+
+parse(p,varargin{:});
+smoothIndividualTrials = p.Results.smoothIndividualTrials;
+alignTo = p.Results.alignTo;
+
 % preallocate:
 window = -(params.time_before+params.smoothing_margins):...
     (params.time_after+params.smoothing_margins);
 vPos = nan(length(ind),length(window));
 hPos = nan(length(ind),length(window));
+
 for ii=1:length(ind)
     
     vPos_raw = data.trials(ind(ii)).vPos;
@@ -36,7 +48,13 @@ for ii=1:length(ind)
     vPos_raw = removesSaccades(vPos_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
     hPos_raw = removesSaccades(hPos_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
     
-    ts = data.trials(ind(ii)).movement_onset+window;
+    switch alignTo
+        case 'targetMovementOnset'
+            ts = data.trials(ind(ii)).movement_onset+window;
+        case 'cue'
+            ts = data.trials(ind(ii)).cue_onset+window;
+    end
+    
     vPos_raw = vPos_raw(ts);
     hPos_raw = hPos_raw(ts);
         
@@ -55,6 +73,15 @@ Have_raw = gaussSmooth(Have_raw,params.SD);
 ts = params.smoothing_margins:(params.time_before+params.smoothing_margins+params.time_after);
 Vave = Vave_raw(ts); 
 Have = Have_raw(ts); 
+
+if smoothIndividualTrials
+    for ii=1:size(hPos,1)
+        
+        hPos(ii,:) = gaussSmooth(hPos(ii,:),params.SD);
+        vPos(ii,:) = gaussSmooth(vPos(ii,:),params.SD);
+        
+    end
+end
 
 vPos = vPos(:,ts);
 hPos = hPos(:,ts);

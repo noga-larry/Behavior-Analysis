@@ -1,5 +1,6 @@
 
-function [gain, latency, init_time ,rotateAngle]  = fitTimingDirectionAndGain(data,ind,params)
+function [gain, latency, direction, init_time ,rotateAngle]  =....
+ fitTimingDirectionAndGain(data,ind)
 
 % This function is based on a function of Mati's used for Raghavan &
 % Joshua, 2017. The function calculates the single trial gain and latency 
@@ -14,6 +15,7 @@ function [gain, latency, init_time ,rotateAngle]  = fitTimingDirectionAndGain(da
 % Outputs:      
 %  gain        The gain of the horizonal and vertical velocity for each
 %              trial, following rotation by rotateAngle.
+
 
 LEN  = 175;
 BASELINE_LEN = 50; %length pf baseline to sunstract from velocity (to account for small drift)
@@ -35,7 +37,7 @@ velocity(2,:,:) = V;
 
 avg_vel = squeeze(nanmean(velocity,2));
 
-%remove basline velocity
+% remove baseline velocity
 base_vel = nanmean(avg_vel(:,1:BASELINE_LEN),2);
 velocity = bsxfun(@minus, velocity, base_vel);
 avg_vel =  bsxfun(@minus, avg_vel, base_vel);
@@ -146,6 +148,9 @@ init_time  = FIRST_INX+BASELINE_LEN;
 if mean(isnan(latency))>0.2
     disp(['A lot of NaNs in latency : ' num2str(mean(isnan(latency)))] )
 end
+
+direction = atand(gain(2,:)./gain(1,:));
+
 % ---  plot some templates
 % figure;
 % col = {'b', 'r', 'g', 'k', 'm'};

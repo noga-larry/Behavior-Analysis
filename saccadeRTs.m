@@ -10,9 +10,8 @@ Len = nan(1,length(ind));
 OverShoot = nan(1,length(ind));
 Vel = nan(1,length(ind));
 
-[~,match_d] = getDirections(data);
+[~,match_d] = getDirections(data,ind);
 for t = 1:length(ind)
-
  
     saccadeWindowBegin = data.trials(ind(t)).movement_onset +minRT;
     saccadeWindowEnd = data.trials(ind(t)).movement_onset + maxRT;
@@ -30,11 +29,11 @@ for t = 1:length(ind)
     end
     
     posChangeInTargetDirection = rotateEyeMovement(deltaH(saccInd(1)),deltaV(saccInd(1)),...
-        -match_d(ind(t))-data.trials(ind(t)).screen_rotation);
+        -match_d(t)-data.trials(ind(t)).screen_rotation);
     RT(t) = data.trials(ind(t)).beginSaccade(saccInd(1))-data.trials(ind(t)).movement_onset;
     Len(t) = data.trials(ind(t)).endSaccade(saccInd(1))-data.trials(ind(t)).beginSaccade(saccInd(1));
     Vel(t) = (posChangeInTargetDirection/Len(t))*1000;
     OverShoot(t) = rotateEyeMovement(data.trials(ind(t)).hPos(data.trials(ind(t)).endSaccade(saccInd(1)))...
         ,data.trials(ind(t)).vPos(data.trials(ind(t)).endSaccade(saccInd(1))),...
-        -match_d(ind(t))-data.trials(ind(t)).screen_rotation);
+        -match_d(t)-data.trials(ind(t)).screen_rotation);
 end

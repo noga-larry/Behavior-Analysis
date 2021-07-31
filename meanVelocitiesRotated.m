@@ -21,13 +21,20 @@ function [Have,Vave,hVel,vVel] = meanVelocitiesRotated(data,params,ind)
 % Outputs:  Have         Average horizontal velocity
 %           Vave         Average vertical velocity
 
+CHOICE_ANGLE = -45; % the angle to which to align choice trials
+
 data.trials = data.trials(ind);
 [~,match_d] = getDirections (data);
 
 for ii=1:length(data.trials)
     traceH = data.trials(ii).hVel;
     traceV = data.trials(ii).vVel;
-    theta = -data.trials(ii).screen_rotation - match_d(ii);
+    
+    if size(match_d,1)==2
+        theta = -data.trials(ii).screen_rotation + CHOICE_ANGLE;
+    else
+        theta = -data.trials(ii).screen_rotation - match_d(ii);
+    end
     
     [rotatedTraceH,rotatedTraceV] = rotateEyeMovement(traceH, traceV, theta);
     data.trials(ii).hVel = rotatedTraceH;

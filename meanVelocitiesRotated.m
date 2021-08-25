@@ -1,4 +1,5 @@
-function [Have,Vave,hVel,vVel] = meanVelocitiesRotated(data,params,ind)
+function [Have,Vave,hVel,vVel] = ...
+    meanVelocitiesRotated(data,params,ind,varargin)
 
 % This function computes the average horizontal and vertical
 % velocities of a subset of trials in a session, rotated to the same angle 
@@ -21,7 +22,7 @@ function [Have,Vave,hVel,vVel] = meanVelocitiesRotated(data,params,ind)
 % Outputs:  Have         Average horizontal velocity
 %           Vave         Average vertical velocity
 
-CHOICE_ANGLE = -45; % the angle to which to align choice trials
+CHOICE_ANGLE = 0; % the angle to which to align choice trials
 
 data.trials = data.trials(ind);
 [~,match_d] = getDirections (data);
@@ -42,4 +43,5 @@ for ii=1:length(data.trials)
     
 end
 
-[Have,Vave,hVel,vVel] = meanVelocities(data,params,1:length(data.trials));
+[Have,Vave,hVel,vVel] =...
+    meanVelocities(data,params,1:length(data.trials),varargin{:});

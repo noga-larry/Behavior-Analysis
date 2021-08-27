@@ -21,9 +21,10 @@ function aveLicking = meanLicking(data,params,ind)
 THRESHOLD = 1000;
 display_time = params.time_before + params.time_after+1;
 
-licking = zeros (display_time+2*params.smoothing_margins,length(ind));
+licking = nan (display_time+2*params.smoothing_margins,length(ind));
 event_window = (-(params.time_before+params.smoothing_margins):...
     (params.time_after+params.smoothing_margins));
+
 for f = 1:length(ind)
     switch params.align_to
         case 'cue'
@@ -33,8 +34,14 @@ for f = 1:length(ind)
         case 'reward'
             ts = data.trials(ind(f)).rwd_time_in_extended + event_window;
     end
+    
+    if max(ts) > length(data.trials(ind(f)).lick) |...
+        min(ts) < 1
+        continue
+    end
+        
+    
     licking (:,f) = data.trials(ind(f)).lick(ts)>THRESHOLD;
 end
 
-aveLicking = raster2psth(licking,params);
 aveLicking = raster2psth(licking,params)/1000;

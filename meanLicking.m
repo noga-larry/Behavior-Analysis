@@ -40,8 +40,12 @@ for f = 1:length(ind)
         continue
     end
         
-    
     licking (:,f) = data.trials(ind(f)).lick(ts)>THRESHOLD;
+end
+
+if isfield(params,'SD') & isnan(params.SD)
+    aveLicking = nanmean(licking,2);
+    return
 end
 
 aveLicking = raster2psth(licking,params)/1000;

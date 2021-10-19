@@ -18,18 +18,16 @@ function [gain, latency, direction, init_time ,rotateAngle]  =....
 
 
 LEN  = 175;
-BASELINE_LEN = 50; %length pf baseline to sunstract from velocity (to account for small drift)
+BASELINE_LEN = 50; %length pf baseline to substract from velocity (to account for small drift)
 FIRST_INX = 25;
 NUM_ITER = 2; % number of iterations
 
-if ~exist('params','var')
-    params.time_before = 0;
-    params.time_after = 200;
-    params.SD = 15;
-    params.smoothing_margins = params.SD*5;
-end
+params.time_before = 0;
+params.time_after = 200;
+params.SD = 15;
+params.smoothing_margins = params.SD*5;
 
-[~,~,V,H] = meanVelocities(data,params,ind,'smoothIndividualTrials',true);
+[~,~,V,H] = meanVelocities(data,params,ind,'smoothIndividualTrials',false);
 
 numTrials = size(H,1);
 velocity(1,:,:) = H;
@@ -42,7 +40,7 @@ base_vel = nanmean(avg_vel(:,1:BASELINE_LEN),2);
 velocity = bsxfun(@minus, velocity, base_vel);
 avg_vel =  bsxfun(@minus, avg_vel, base_vel);
 
-last_inx = min(FIRST_INX+LEN-1, length(V));
+last_inx = min(FIRST_INX+LEN-1, size(V,2));
 template(1,:) = avg_vel(1, FIRST_INX:last_inx);
 template(2,:) = avg_vel(2, FIRST_INX:last_inx);
 
@@ -54,7 +52,7 @@ rotateAngle = -(angle-45); % rotate to 45;
 [velocity(1,:,:),velocity(2,:,:)] = ...
     rotateEyeMovement(squeeze(velocity(1,:,:)),squeeze(velocity(2,:,:)),rotateAngle);
 
-all_template =[];%%% 
+all_templates =[];%%% 
 all_vaf = [];%%%
 all_init = [];%%%
  
@@ -74,8 +72,8 @@ for k =1:NUM_ITER
         end
         template = nanmean(velocityShifted,2);
     end
-    all_template(k,:,:) = template;
     
+    all_templates(k,:,:) = template;    
     
     if( length(template) <  LEN)
         warning('not enough data for matching template');

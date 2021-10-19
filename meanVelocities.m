@@ -37,6 +37,9 @@ window = -(params.time_before+params.smoothing_margins):...
     (params.time_after+params.smoothing_margins);
 vVel = nan(length(ind),length(window));
 hVel = nan(length(ind),length(window));
+
+alignmentTimes = alignmentTimesFactory(data,ind,alignTo);
+
 for ii=1:length(ind)
     
     vVel_raw = data.trials(ind(ii)).vVel;
@@ -47,13 +50,12 @@ for ii=1:length(ind)
     vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
     hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
     
-    switch alignTo
-        case 'targetMovementOnset'
-            ts = data.trials(ind(ii)).movement_onset+window;
-        case 'cue'
-            ts = data.trials(ind(ii)).cue_onset+window;
+    if strcmp(alignTo,'pursuitLatency') & isnan(alignmentTimes(ii))
+        continue
     end
-    
+        
+    ts = alignmentTimes(ii)+window;     
+        
     vVel_raw = vVel_raw(ts);
     hVel_raw = hVel_raw(ts);
         

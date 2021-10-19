@@ -13,16 +13,13 @@ function boolSaccade = isTrailWIthSaccade(data,align_to, tb, te)
 %                             blink in trial i in the specified time range.
 
 boolSaccade = nan(1,length(data.trials));
+alignment_times = alignmentTimesFactory(data,1:length(data.trials),align_to);  
+
 for t=1:length(data.trials)
-    switch align_to
-        case 'targetMovementOnset'
-            tb_in_trial = data.trials(t).movement_onset - tb;
-            te_in_trial = data.trials(t).movement_onset + te;
-        case 'cue'
-            tb_in_trial = data.trials(t).cue_onset - tb;
-            te_in_trial = data.trials(t).cue_onset + te;
-    end
-    
+        
+    tb_in_trial = alignment_times(t) - tb;
+    te_in_trial = alignment_times(t) + te;
+             
     saccade_before_range = (data.trials(t).beginSaccade <= tb_in_trial) & ...
         (data.trials(t).endSaccade >= tb_in_trial);
      saccade_begins_in_range = (data.trials(t).beginSaccade >= tb_in_trial) & ...

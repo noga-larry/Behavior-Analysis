@@ -24,12 +24,16 @@ function [Have,Vave,hPos,vPos] = meanPositions(data,params,ind,varargin)
 p = inputParser;
 defaultSmoothIndividualTrials = false;
 defaultAlignTo = 'targetMovementOnset';
+defaultRemoveSaccades = true; % remove saccades and blinks
+
 addOptional(p,'smoothIndividualTrials',defaultSmoothIndividualTrials,@islogical);
 addOptional(p,'alignTo',defaultAlignTo,@ischar);
+addOptional(p,'removeSaccades',defaultRemoveSaccades,@islogical);
 
 parse(p,varargin{:});
 smoothIndividualTrials = p.Results.smoothIndividualTrials;
 alignTo = p.Results.alignTo;
+removeSaccades = p.Results.removeSaccades;
 
 % preallocate:
 window = -(params.time_before+params.smoothing_margins):...
@@ -42,11 +46,12 @@ for ii=1:length(ind)
     vPos_raw = data.trials(ind(ii)).vPos;
     hPos_raw = data.trials(ind(ii)).hPos;
 
-    
-    vPos_raw = removesSaccades(vPos_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
-    hPos_raw = removesSaccades(hPos_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
-    vPos_raw = removesSaccades(vPos_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
-    hPos_raw = removesSaccades(hPos_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+    if removeSaccades
+        vPos_raw = removesSaccades(vPos_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
+        hPos_raw = removesSaccades(hPos_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
+        vPos_raw = removesSaccades(vPos_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+        hPos_raw = removesSaccades(hPos_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+    end
     
     switch alignTo
         case 'targetMovementOnset'

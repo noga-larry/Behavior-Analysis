@@ -24,13 +24,16 @@ function [Have,Vave,hVel,vVel] = meanVelocities(data,params,ind, varargin)
 p = inputParser;
 defaultSmoothIndividualTrials = false;
 defaultAlignTo = 'targetMovementOnset';
+defaultRemoveSaccades = true; % remove saccades and blinks
+
 addOptional(p,'smoothIndividualTrials',defaultSmoothIndividualTrials,@islogical);
 addOptional(p,'alignTo',defaultAlignTo,@ischar);
+addOptional(p,'removeSaccades',defaultRemoveSaccades,@islogical);
 
 parse(p,varargin{:});
 smoothIndividualTrials = p.Results.smoothIndividualTrials;
 alignTo = p.Results.alignTo;
-
+removeSaccades = p.Results.removeSaccades;
 
 % preallocate:
 window = -(params.time_before+params.smoothing_margins):...
@@ -45,10 +48,12 @@ for ii=1:length(ind)
     vVel_raw = data.trials(ind(ii)).vVel;
     hVel_raw = data.trials(ind(ii)).hVel;
     
-    vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
-    hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
-    vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
-    hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+    if removeSaccades
+        vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
+        hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
+        vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+        hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
+    end
     
     if strcmp(alignTo,'pursuitLatency') & isnan(alignmentTimes(ii))
         continue

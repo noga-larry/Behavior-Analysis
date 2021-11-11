@@ -101,13 +101,13 @@ for t = 1:length(ind)
     beginIndVec(t) = indBegin - MARGIN;
     endIndVec(t) = indEnd + MARGIN;
     
-        cla
-        ts = -params.time_before:params.time_after;
-        plot(ts,Vvel(t,:)); hold on; plot(ts,Hvel(t,:))
-        plot(ts(indBegin),Vvel(t,indBegin),'*k')
-        plot(ts(indBegin),Hvel(t,indBegin),'*k')
-        plot(ts(indEnd),Vvel(t,indEnd),'*g')
-        plot(ts(indEnd),Hvel(t,indEnd),'*g')
+%         cla
+%         ts = -params.time_before:params.time_after;
+%         plot(ts,Vvel(t,:)); hold on; plot(ts,Hvel(t,:))
+%         plot(ts(indBegin),Vvel(t,indBegin),'*k')
+%         plot(ts(indBegin),Hvel(t,indBegin),'*k')
+%         plot(ts(indEnd),Vvel(t,indEnd),'*g')
+%         plot(ts(indEnd),Hvel(t,indEnd),'*g')
         
 end
 end

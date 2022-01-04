@@ -26,6 +26,7 @@ event_window = (-(params.time_before+params.smoothing_margins):...
     (params.time_after+params.smoothing_margins));
 
 for f = 1:length(ind)
+    
     switch params.align_to
         case 'cue'
             ts = data.trials(ind(f)).extended_trial_begin + data.trials(ind(f)).cue_onset + event_window;

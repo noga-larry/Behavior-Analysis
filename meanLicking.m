@@ -31,7 +31,7 @@ for f = 1:length(ind)
         case 'cue'
             ts = data.trials(ind(f)).extended_trial_begin + data.trials(ind(f)).cue_onset + event_window;
         case 'targetMovementOnset'
-            ts = data.trials(ind(f)).extended_trial_begin + data.trials(ind(f)).movement_onset + event_window
+            ts = data.trials(ind(f)).extended_trial_begin + data.trials(ind(f)).movement_onset + event_window;
         case 'reward'
             ts = data.trials(ind(f)).rwd_time_in_extended + event_window;
     end

@@ -31,7 +31,7 @@ for ii=1:length(data.trials)
     traceH = data.trials(ii).hVel;
     traceV = data.trials(ii).vVel;
     
-    if size(match_d,1)==2
+    if size(match_d,2)==2
         theta = -data.trials(ii).screen_rotation + CHOICE_ANGLE;
     else
         theta = -data.trials(ii).screen_rotation - match_d(ii);

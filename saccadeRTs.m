@@ -1,9 +1,15 @@
-function [RT,Len,OverShoot,Vel] = saccadeRTs(data,ind)
+function [RT,Len,OverShoot,Vel] = saccadeRTs(data,ind, corrective)
 
 
 minRT = 20; % minimal time between traget movemet and the saccade;
 maxRT = 800; % maximal time between traget movemet and the saccade;
 minNorm = 4; % minimal norm of saccade
+
+if exist('corrective','var')
+    minRT = 130; % minimal time between traget movemet and the saccade;
+    maxRT = 800; % maximal time between traget movemet and the saccade;
+    minNorm = 0.5;
+end
 
 RT = nan(1,length(ind));
 Len = nan(1,length(ind));
@@ -23,7 +29,7 @@ for t = 1:length(ind)
         - data.trials(ind(t)).vPos(data.trials(ind(t)).beginSaccade);
     saccadeNormIsLarge = (vecnorm([deltaH;deltaV])>minNorm);
   
-    saccInd = find (saccadeNormIsLarge & saccadeIsTimed);
+    saccInd = find (saccadeNormIsLarge & saccadeIsTimed,1);
     if length(saccInd)==0
         continue
     end
@@ -36,4 +42,13 @@ for t = 1:length(ind)
     OverShoot(t) = rotateEyeMovement(data.trials(ind(t)).hPos(data.trials(ind(t)).endSaccade(saccInd(1)))...
         ,data.trials(ind(t)).vPos(data.trials(ind(t)).endSaccade(saccInd(1))),...
         -match_d(t)-data.trials(ind(t)).screen_rotation);
+    
+%     cla
+%     hold on
+%     
+%     plot(data.trials(ind(t)).hVel);plot(data.trials(ind(t)).vVel)
+%     xline(data.trials(ind(t)).beginSaccade(saccInd));
+%     xline(data.trials(ind(t)).endSaccade(saccInd));
+%     a=5;
+
 end

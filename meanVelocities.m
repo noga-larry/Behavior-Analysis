@@ -21,76 +21,8 @@ function [Have,Vave,hVel,vVel] = meanVelocities(data,params,ind, varargin)
 %           Vave         Average vertical velocity
 
 
-p = inputParser;
-defaultSmoothIndividualTrials = false;
-defaultAlignTo = 'targetMovementOnset';
-defaultRemoveSaccades = true; % remove saccades and blinks
+[Have,Vave,hVel,vVel] = meanBehavior(data,params,ind,'vel',varargin{:});
 
-addOptional(p,'smoothIndividualTrials',defaultSmoothIndividualTrials,@islogical);
-addOptional(p,'alignTo',defaultAlignTo,@ischar);
-addOptional(p,'removeSaccades',defaultRemoveSaccades,@islogical);
-
-parse(p,varargin{:});
-smoothIndividualTrials = p.Results.smoothIndividualTrials;
-alignTo = p.Results.alignTo;
-removeSaccades = p.Results.removeSaccades;
-
-% preallocate:
-window = -(params.time_before+params.smoothing_margins):...
-    (params.time_after+params.smoothing_margins);
-vVel = nan(length(ind),length(window));
-hVel = nan(length(ind),length(window));
-
-alignmentTimes = alignmentTimesFactory(data,ind,alignTo);
-
-for ii=1:length(ind)
-    
-    vVel_raw = data.trials(ind(ii)).vVel;
-    hVel_raw = data.trials(ind(ii)).hVel;
-    
-    if removeSaccades
-        vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
-        hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).beginSaccade,data.trials(ind(ii)).endSaccade );
-        vVel_raw = removesSaccades(vVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
-        hVel_raw = removesSaccades(hVel_raw,data.trials(ind(ii)).blinkBegin,data.trials(ind(ii)).blinkEnd);
-    end
-    
-    if strcmp(alignTo,'pursuitLatency') & isnan(alignmentTimes(ii))
-        continue
-    end
-        
-    ts = alignmentTimes(ii)+window;     
-        
-    vVel_raw = vVel_raw(ts);
-    hVel_raw = hVel_raw(ts);
-        
-    vVel(ii,:) = vVel_raw;
-    hVel(ii,:) = hVel_raw;
-    
-    
-end
-
-Vave_raw = nanmean(vVel,1);
-Have_raw = nanmean(hVel,1);
-
-Vave_raw = gaussSmooth(Vave_raw,params.SD);
-Have_raw = gaussSmooth(Have_raw,params.SD);
-
-ts = params.smoothing_margins:(params.time_before+params.smoothing_margins+params.time_after);
-Vave = Vave_raw(ts); 
-Have = Have_raw(ts); 
-
-if smoothIndividualTrials
-    for ii=1:size(hVel,1)
-        
-        hVel(ii,:) = gaussSmooth(hVel(ii,:),params.SD);
-        vVel(ii,:) = gaussSmooth(vVel(ii,:),params.SD);
-        
-    end
-end
-
-vVel = vVel(:,ts);
-hVel = hVel(:,ts);
 
 
 

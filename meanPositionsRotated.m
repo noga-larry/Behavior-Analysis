@@ -1,5 +1,5 @@
-function [Have,Vave,hVel,vVel] = ...
-    meanVelocitiesRotated(data,params,ind,varargin)
+function [Have,Vave,H,V] = ...
+    meanPositionsRotated(data,params,ind,varargin)
 
 % This function computes the average horizontal and vertical
 % velocities of a subset of trials in a session, rotated to the same angle 
@@ -24,4 +24,4 @@ function [Have,Vave,hVel,vVel] = ...
 
 
 [Have,Vave,H,V] = meanRotatedBehavior(data,params,ind,...
-    'vel', varargin{:})
+    'pos', varargin{:})

@@ -49,6 +49,7 @@ for t = 1:length(ind)
 %     plot(data.trials(ind(t)).hVel);plot(data.trials(ind(t)).vVel)
 %     xline(data.trials(ind(t)).beginSaccade(saccInd));
 %     xline(data.trials(ind(t)).endSaccade(saccInd));
+%     xline(data.trials(ind(t)).movement_onset,'r');
 %     a=5;
 
 end

@@ -21,7 +21,7 @@ function [Have,Vave,hPos,vPos] = meanPositions(data,params,ind,varargin)
 %           Vave         Average vertical position
 
 
-[Have,Vave,hPos,vPos] = meanBehavior(data,params,ind,'pos',varargin);
+[Have,Vave,hPos,vPos] = meanBehavior(data,params,ind,'pos',varargin{:});
 
 
 

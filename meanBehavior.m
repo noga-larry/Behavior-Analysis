@@ -1,7 +1,5 @@
 function [Have,Vave,H,V] = meanBehavior(data,params,ind,behavior_type,varargin)
 
-
-
 p = inputParser;
 defaultSmoothIndividualTrials = false;
 defaultAlignTo = 'targetMovementOnset';

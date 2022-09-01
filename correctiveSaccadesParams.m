@@ -30,7 +30,7 @@ end
 
 function [beginIndVec,endIndVec] = findTimes(data,params,ind)
 
-ACC_THRESH = 750; % deg/ms^2
+ACC_THRESH = 750; % deg/s^2
 MARGIN = 10; % ms
 GAP_DURATION =  60; % ms
 VEL_THRSHOLD = 50; % velocity threshold

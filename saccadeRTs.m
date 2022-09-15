@@ -1,4 +1,4 @@
-function [RT,Len,OverShoot,Vel] = saccadeRTs(data,ind, corrective)
+function [RT,Len,OverShoot,Vel] = saccadeRTs(data,ind,corrective)
 
 
 minRT = 20; % minimal time between traget movemet and the saccade;
@@ -42,14 +42,15 @@ for t = 1:length(ind)
     OverShoot(t) = rotateEyeMovement(data.trials(ind(t)).hPos(data.trials(ind(t)).endSaccade(saccInd(1)))...
         ,data.trials(ind(t)).vPos(data.trials(ind(t)).endSaccade(saccInd(1))),...
         -match_d(t)-data.trials(ind(t)).screen_rotation);
-    
-%     cla
-%     hold on
-%     
-%     plot(data.trials(ind(t)).hVel);plot(data.trials(ind(t)).vVel)
-%     xline(data.trials(ind(t)).beginSaccade(saccInd));
-%     xline(data.trials(ind(t)).endSaccade(saccInd));
-%     xline(data.trials(ind(t)).movement_onset,'r');
-%     a=5;
+%     if ~isnan (RT(t))
+%         cla
+%         hold on
+% 
+%         plot(data.trials(ind(t)).hVel);plot(data.trials(ind(t)).vVel)
+%         xline(data.trials(ind(t)).beginSaccade(saccInd));
+%         xline(data.trials(ind(t)).endSaccade(saccInd));
+%         xline(data.trials(ind(t)).movement_onset,'r');
+%         a=5;
+%     end
 
 end

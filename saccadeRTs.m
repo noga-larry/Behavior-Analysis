@@ -1,14 +1,14 @@
 function [RT,Len,OverShoot,Vel] = saccadeRTs(data,ind,corrective)
 
 
-minRT = 20; % minimal time between traget movemet and the saccade;
-maxRT = 800; % maximal time between traget movemet and the saccade;
-minNorm = 4; % minimal norm of saccade
+MIN_RT = 20; % minimal time between traget movemet and the saccade;
+MAX_RT = 800; % maximal time between traget movemet and the saccade;
+MIN_NORM = 4; % minimal norm of saccade
 
 if exist('corrective','var')
-    minRT = 130; % minimal time between traget movemet and the saccade;
+    MIN_RT = 130; % minimal time between traget movemet and the saccade;
     maxRT = 800; % maximal time between traget movemet and the saccade;
-    minNorm = 0.5;
+    MIN_NORM = 0.5;
 end
 
 RT = nan(1,length(ind));
@@ -19,7 +19,7 @@ Vel = nan(1,length(ind));
 [~,match_d] = getDirections(data,ind);
 for t = 1:length(ind)
  
-    saccadeWindowBegin = data.trials(ind(t)).movement_onset +minRT;
+    saccadeWindowBegin = data.trials(ind(t)).movement_onset +MIN_RT;
     saccadeWindowEnd = data.trials(ind(t)).movement_onset + maxRT;
     saccadeIsTimed = (saccadeWindowBegin < data.trials(ind(t)).beginSaccade)...
         & (saccadeWindowEnd > data.trials(ind(t)).beginSaccade);
@@ -27,7 +27,7 @@ for t = 1:length(ind)
         - data.trials(ind(t)).hPos(data.trials(ind(t)).beginSaccade);
     deltaV = data.trials(ind(t)).vPos(data.trials(ind(t)).endSaccade)...
         - data.trials(ind(t)).vPos(data.trials(ind(t)).beginSaccade);
-    saccadeNormIsLarge = (vecnorm([deltaH;deltaV])>minNorm);
+    saccadeNormIsLarge = (vecnorm([deltaH;deltaV])>MIN_NORM);
   
     saccInd = find (saccadeNormIsLarge & saccadeIsTimed,1);
     if length(saccInd)==0

@@ -1,6 +1,8 @@
 function [beginSaccade, endSaccade] = getSaccades( Hvel, Vvel, blinks, targetOnset, targetOffset )
 
-% This function finds saccades and blinks in the behavioral data. It is
+% 2023/03/22: BLINKS REMOVED!
+
+% This function finds saccades in the behavioral data. It is
 % based on an old function of Mati's and is therefore a little messy. 
 % Inputs   Hvel      Horizontal vellocity trace
 %          Vvel      Vertical vellocity trace
@@ -66,6 +68,7 @@ in_sac = 0;
  end
  
 
+
 % convert to markers
     
 % the purpose of the added 0s is that if the trial begins or end in a
@@ -103,6 +106,26 @@ else
     endSaccade = endSaccade_raw;
     
 end
+
+blinkBegin = blinks(1:2:end);
+blinkEnd = blinks(2:2:end);
+
+blinkInx =[];
+for i = 1:length(blinkBegin)
+    blinkInx =  [blinkInx blinkBegin(i):blinkEnd(i)];
+end
+overlap_indices = [];
+
+for i = 1:length(beginSaccade)
+    % Check if there is an overlap 
+    if ~isempty(intersect(blinkInx, beginSaccade(i):endSaccade(i)))
+        % If there is an overlap, add the index to the overlap_indices vector
+        overlap_indices(end+1) = i;
+    end
+end
+
+endSaccade(overlap_indices) = [];
+beginSaccade(overlap_indices) = [];
 
 % plot(Vvel);
 % hold on;

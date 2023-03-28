@@ -20,7 +20,7 @@ Vel = nan(1,length(ind));
 for t = 1:length(ind)
  
     saccadeWindowBegin = data.trials(ind(t)).movement_onset +MIN_RT;
-    saccadeWindowEnd = data.trials(ind(t)).movement_onset + maxRT;
+    saccadeWindowEnd = data.trials(ind(t)).movement_onset + MAX_RT;
     saccadeIsTimed = (saccadeWindowBegin < data.trials(ind(t)).beginSaccade)...
         & (saccadeWindowEnd > data.trials(ind(t)).beginSaccade);
     deltaH = data.trials(ind(t)).hPos(data.trials(ind(t)).endSaccade)...

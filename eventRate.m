@@ -1,4 +1,4 @@
-function rate = eventRate(data,eventFeild,alignTo,ind,eventWindow) 
+function [rate,mat] = eventRate(data,eventFeild,alignTo,ind,eventWindow,SD) 
 
 alignmentTimes = alignmentTimesFactory(data,ind,alignTo);
 
@@ -9,4 +9,10 @@ for t=1:length(ind)
     mat(t,:) = times2Binary(eventTimes,alignmentTimes(t),eventWindow);
 end
 
-rate=mean(mat,1)*1000;
+if ~isempty(SD)
+    params.SD=SD;
+    params.smoothing_margins = 0;
+    rate=raster2psth(mat',params);
+else
+    rate = mean(mat,1);
+end

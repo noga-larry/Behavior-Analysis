@@ -75,8 +75,8 @@ for ii=1:length(ind)
     
 end
 
-Vave_raw = mean(V,'omitnan');
-Have_raw = mean(H,'omitnan');
+Vave_raw = mean(V,1,'omitnan');
+Have_raw = mean(H,1,'omitnan');
 
 Vave_raw = gaussSmooth(Vave_raw,params.SD);
 Have_raw = gaussSmooth(Have_raw,params.SD);

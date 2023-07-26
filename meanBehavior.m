@@ -11,7 +11,6 @@ addOptional(p,'alignTo',defaultAlignTo,@ischar);
 addOptional(p,'removeSaccades',defaultRemoveSaccades,@islogical);
 addOptional(p,'takeFromExtended',defaultTakeFromExtended,@islogical);
 
-
 parse(p,varargin{:});
 smoothIndividualTrials = p.Results.smoothIndividualTrials;
 alignTo = p.Results.alignTo;
